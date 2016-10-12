@@ -29,7 +29,7 @@ Pull requests greatly welcomed!
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "Stmt1426256275000",
+            "Sid": "AllowsAutomaticBackupsOfEC2",
             "Effect": "Allow",
             "Action": [
                 "ec2:CreateSnapshot",
@@ -76,9 +76,9 @@ Default output format: (Enter "text".)```
 **Install Script**: Download the latest version of the snapshot script and make it executable:
 ```
 cd ~
-wget https://raw.githubusercontent.com/CaseyLabs/aws-ec2-ebs-automatic-snapshot-bash/master/ebs-snapshot.sh
+wget https://raw.githubusercontent.com/octavianparalescu/aws-ec2-ebs-automatic-snapshot-bash/master/ebs-snapshot.sh
 chmod +x ebs-snapshot.sh
-mkdir -p /opt/aws
+sudo mkdir -p /opt/aws
 sudo mv ebs-snapshot.sh /opt/aws/
 ```
 
@@ -94,4 +94,9 @@ AWS_CONFIG_FILE="/root/.aws/config"
 To manually test the script:
 ```
 sudo /opt/aws/ebs-snapshot.sh
+```
+
+Log file available at:
+```
+/var/log/ebs-snapshot.log
 ```
