@@ -32,7 +32,7 @@ instance_id=$(ec2metadata|grep 'instance-id'|awk '{print $2}')
 region=$(ec2metadata|grep 'availability-zone'|awk '{print $2}'|sed 's/[a-z]$//g')
 instance_name=$(aws ec2 describe-tags --filters Name=resource-id,Values=${instance_id} Name=key,Values=Name --query Tags[].Value --output text)
 echo ${instance_name}
-die "Kaboom"
+exit 1;
 
 # Set Logging Options
 logfile="/var/log/ebs-snapshot.log"
