@@ -28,8 +28,8 @@ set -o pipefail
 ## Variable Declarations ##
 
 # Get Instance Details
-instance_id=$(wget -q -O- http://169.254.169.254/latest/meta-data/instance-id)
-region=$(wget -q -O- http://169.254.169.254/latest/meta-data/placement/availability-zone | sed -e 's/\([1-9]\).$/\1/g')
+instance_id=$(ec2metadata|grep 'instance-id'|awk '{print $2}')
+region=$(ec2metadata|grep 'availability-zone'|awk '{print $2}'|sed 's/[a-z]$//g')
 instance_name=$(aws ec2 describe-tags --filters Name=resource-id,Values=${instance_id} Name=key,Values=Name --query Tags[].Value --output text)
 echo ${instance_name}
 die "Kaboom"
