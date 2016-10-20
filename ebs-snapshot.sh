@@ -31,8 +31,6 @@ set -o pipefail
 instance_id=$(ec2metadata|grep 'instance-id'|awk '{print $2}')
 region=$(ec2metadata|grep 'availability-zone'|awk '{print $2}'|sed 's/[a-z]$//g')
 instance_name=$(aws ec2 describe-tags --filters Name=resource-id,Values=${instance_id} Name=key,Values=Name --query Tags[].Value --output text)
-echo ${instance_name}
-exit 1;
 
 # Set Logging Options
 logfile="/var/log/ebs-snapshot.log"
@@ -79,7 +77,7 @@ snapshot_volumes() {
 		device_name=$(aws ec2 describe-volumes --region $region --output=text --volume-ids $volume_id --query 'Volumes[0].{Devices:Attachments[0].Device}')
 
 		# Take a snapshot of the current volume, and capture the resulting snapshot ID
-		snapshot_description="$(hostname)-$device_name-backup-$(date +%Y-%m-%d)"
+		snapshot_description="$instance_name-$(hostname)-$device_name-backup-$(date +%Y-%m-%d)"
 
 		snapshot_id=$(aws ec2 create-snapshot --region $region --output=text --description $snapshot_description --volume-id $volume_id --query SnapshotId)
 		log "New snapshot is $snapshot_id"
