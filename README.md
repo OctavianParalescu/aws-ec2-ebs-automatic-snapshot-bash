@@ -3,18 +3,20 @@ aws-ec2-ebs-automatic-snapshot-bash
 
 ####Bash script for Automatic EBS Snapshots and Cleanup on Amazon Web Services (AWS)
 
-Written by  **[AWS Consultants - Casey Labs Inc.] (http://www.caseylabs.com)**
+Initially written by  **[AWS Consultants - Casey Labs Inc.] (http://www.caseylabs.com)**
 
-*Contact us for all your Amazon Web Services consulting needs!*
+Differences within this fork:
+- snapshot name contains the name of the EC2 instance and the hostname
+- no wget prerequisite
 
 ===================================
 
 **How it works:**
 ebs-snapshot.sh will:
-- Determine the instance ID of the EC2 server on which the script runs
+- Determine the instance ID and the instance name of the EC2 server on which the script runs
 - Gather a list of all volume IDs attached to that instance
 - Take a snapshot of each attached volume
-- The script will then delete all associated snapshots taken by the script that are older than 7 days
+- The script will then delete all associated snapshots taken by the script that are older than 14 days
 
 Pull requests greatly welcomed!
 
@@ -36,7 +38,8 @@ Pull requests greatly welcomed!
                 "ec2:CreateTags",
                 "ec2:DeleteSnapshot",
                 "ec2:DescribeSnapshots",
-                "ec2:DescribeVolumes"
+                "ec2:DescribeVolumes",
+                "ec2:DescribeTags"
             ],
             "Resource": [
                 "*"
@@ -68,12 +71,12 @@ sudo aws configure
 
 AWS Access Key ID: (Enter in the IAM credentials generated above.)
 AWS Secret Access Key: (Enter in the IAM credentials generated above.)
-Default region name: (The region that this instance is in: i.e. us-east-1, eu-west-1, etc.)
+Default region name: (The region that this instance is in: i.e. us-east-1, eu-west-1, etc. see http://docs.aws.amazon.com/general/latest/gr/rande.html)
 Default output format: (Enter "text".)```
 ```
 <br />
 
-**Install Script**: Download the latest version of the snapshot script and make it executable:
+**Install/Update Script**: Download the latest version of the snapshot script and make it executable:
 ```
 cd ~
 wget https://raw.githubusercontent.com/octavianparalescu/aws-ec2-ebs-automatic-snapshot-bash/master/ebs-snapshot.sh

@@ -27,11 +27,6 @@ set -o pipefail
 
 ## Variable Declarations ##
 
-# Get Instance Details
-instance_id=$(ec2metadata|grep 'instance-id'|awk '{print $2}')
-region=$(ec2metadata|grep 'availability-zone'|awk '{print $2}'|sed 's/[a-z]$//g')
-instance_name=$(aws ec2 describe-tags --filters Name=resource-id,Values=${instance_id} Name=key,Values=Name --query Tags[].Value --output text)
-
 # Set Logging Options
 logfile="/var/log/ebs-snapshot.log"
 logfile_max_lines="5000"
@@ -60,7 +55,7 @@ log() {
 
 # Function: Confirm that the AWS CLI and related tools are installed.
 prerequisite_check() {
-	for prerequisite in aws wget; do
+	for prerequisite in aws; do
 		hash $prerequisite &> /dev/null
 		if [[ $? == 1 ]]; then
 			echo "In order to use this script, the executable \"$prerequisite\" must be installed." 1>&2; exit 70
@@ -116,6 +111,11 @@ cleanup_snapshots() {
 
 log_setup
 prerequisite_check
+
+# Get Instance Details
+instance_id=$(ec2metadata|grep 'instance-id'|awk '{print $2}')
+region=$(ec2metadata|grep 'availability-zone'|awk '{print $2}'|sed 's/[a-z]$//g')
+instance_name=$(aws ec2 describe-tags --filters Name=resource-id,Values=${instance_id} Name=key,Values=Name --query Tags[].Value --output text)
 
 # Grab all volume IDs attached to this instance
 volume_list=$(aws ec2 describe-volumes --region $region --filters Name=attachment.instance-id,Values=$instance_id --query Volumes[].VolumeId --output text)
