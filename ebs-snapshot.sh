@@ -70,7 +70,7 @@ prerequisite_check() {
 
 # Function: Snapshot all volumes attached to this instance.
 snapshot_volumes() {
-	for volume_id in $volume_list; do
+	for volume_id in ${volume_list}; do
 		log "Volume ID is $volume_id"
 
 		# Get the attched device name to add to the description so we can easily tell which volume this is.
@@ -79,7 +79,9 @@ snapshot_volumes() {
 		# Take a snapshot of the current volume, and capture the resulting snapshot ID
 		snapshot_description="$instance_name-$(hostname)-$device_name-backup-$(date +%Y-%m-%d)"
 
-		snapshot_id=$(aws ec2 create-snapshot --region $region --output=text --description $snapshot_description --volume-id $volume_id --query SnapshotId)
+		log "Snapshot description will be $snapshot_description"
+
+		snapshot_id=$(aws ec2 create-snapshot --region $region --output=text --description "${snapshot_description}" --volume-id $volume_id --query SnapshotId)
 		log "New snapshot is $snapshot_id"
 	 
 		# Add a "CreatedBy:AutomatedBackup" tag to the resulting snapshot.
