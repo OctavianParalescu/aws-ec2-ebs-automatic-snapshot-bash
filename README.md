@@ -86,9 +86,10 @@ sudo mv ebs-snapshot.sh /opt/aws/
 ```
 
 You should then setup a cron job in order to schedule a nightly backup. Please keep in mind you should use your
-user's home folder to define the path to the aws configuration file. Example crontab job using the home folder of the user "ubuntu":
+user's home folder so AWS knows from where it should load the configuration. Example crontab job using the home 
+folder of the user "ubuntu":
 ```
-0 4 * * * AWS_CONFIG_FILE="/home/ubuntu/.aws" /opt/aws/ebs-snapshot.sh >/dev/null 2>&1
+0 4 * * * HOME=/home/ubuntu /opt/aws/ebs-snapshot.sh 2>&1
 ```
 You should edit the crontab file of the sudo user (run "sudo crontab -e").
 
